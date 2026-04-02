@@ -18,7 +18,9 @@ public class PomodoroTimer {
 
     private String alarmSound;
 
+    //constructor: 
     public PomodoroTimer(int workDuration, int breakDuration, String alarmSound, int volume) {
+        if(worDuration)
         //error checking
     }
 

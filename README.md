@@ -98,6 +98,10 @@ classDiagram
    }
 
    class PomodoroTimer {
+   + DEFAULT_WORK_DURATION : int = 25 * 60 
+   + DEFAULT_BREAK_DURATION : int = 5 * 60
+   + DEFAULT_VOLUME : int = 5
+   + DEFAULT_ALARM_SOUND : String = "Default"
    - workDuration : int
    - breakDuration : int 
    - remainingTime : int 
@@ -106,8 +110,7 @@ classDiagram
    - isRunning : boolean
    - workSession : boolean
    - progress : double
-   - alarmSound : String
-   
+   - alarmSound : String 
    }
 
 
