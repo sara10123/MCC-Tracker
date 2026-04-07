@@ -12,21 +12,49 @@ public class PomodoroTimer {
     private int volume;
     
     private boolean isRunning;
-    private boolean workSession;
+    private boolean isWorkSession;
     
     private double progress;
 
     private String alarmSound;
 
-    //constructor: 
-    public PomodoroTimer(int workDuration, int breakDuration, String alarmSound, int volume) {
-        if(worDuration)
+    //constructor: FINISH LATER 
+    //public PomodoroTimer(int workDuration, int breakDuration, String alarmSound, int volume) {
+        //if(worDuration)
         //error checking
+    //}
+
+    //getters
+    public int getWorkDuration() {
+        return workDuration;
     }
 
+    public int getBreakDuration() {
+        return breakDuration;
+    }
 
+    public int getRemainingTime() {
+        return remainingTime;
+    }
 
+    public int getSessionCount() {
+        return sessionCount;
+    }
 
+    public int getVolume() {
+        return volume;
+    }
+    
+    //setters: 
+    public void setAlarmSound(String alarmSound) {
+        this.alarmSound = alarmSound;
+    }
+
+    public void setVolume(int volume) {
+        if (volume >= 0 && volume <= 100) {
+            this.volume = volume;
+        }
+    }
 
     
     

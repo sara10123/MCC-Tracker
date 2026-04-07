@@ -108,7 +108,7 @@ classDiagram
    - sessionCount : int
    - volume : int
    - isRunning : boolean
-   - workSession : boolean
+   - isWorkSession : boolean
    - progress : double
    - alarmSound : String 
    }
