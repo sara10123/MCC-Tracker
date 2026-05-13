@@ -38,7 +38,13 @@ public class DietTracker extends HealthTracker {
         if (original != null) {
             // set all the data
             this.setWeight(original.getWeight());
-            this.setHeight(original.getHeightInInches());
+            try{
+                this.setHeight(original.getHeightInInches());
+            } catch(UnitMismatchException UME) {
+                System.out.println(UME.getMessage());
+                return;
+                //There would probably need to be more here in the project when we are finishing up
+            }
             this.setFoodName(original.foodName);
             this.setCalories(original.calories);
             this.setProtein(original.protein);

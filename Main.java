@@ -8,7 +8,13 @@ public class Main {
         System.out.println("Start Copy= " + copyOfTester);
 
         tester.setWeight(205.6);
-        tester.setHeight(60);
+        try{
+            tester.setHeight(120);
+        } catch(UnitMismatchException UME) {
+            System.out.println(UME.getMessage());
+            System.out.println("If you are seeing this, this test worked!");
+        }
+        
 
         System.out.println("After changes = " + tester); //205.6, 100
         System.out.println("After changescopy = " + copyOfTester); //100, 100

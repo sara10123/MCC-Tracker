@@ -10,10 +10,18 @@ public abstract class HealthTracker {
     // instance vars
     private double weight;
     private int height; // in inches
+    private boolean heightOverride;
 
     // constructors
     public HealthTracker(double weight, int height) {
-        boolean isValid = this.setWeight(weight) && this.setHeight(height);
+        boolean isValid;
+        try{
+            isValid = this.setWeight(weight) && this.setHeight(height);
+        } catch(UnitMismatchException UME) {
+            System.out.println(UME.getMessage());
+            isValid = false;
+        }
+        
         if (!isValid) {
             // throw error (checking)
             throw new IllegalArgumentException("ERROR: bad data given to HealthTracker full constructor");
@@ -35,6 +43,8 @@ public abstract class HealthTracker {
 
     // mutators
     public boolean setWeight(double weight) {
+        //Implementing the UnitMismatch exception here would be a lot more difficult
+        //Since weight varies a lot more, and kilograms and lbs are closer than cm and inches
         if (weight > 0) { //only set if valid data
             this.weight = weight;
             return true;
@@ -43,10 +53,14 @@ public abstract class HealthTracker {
         }
     }
 
-    public boolean setHeight(int height) {
-        if (height > 0) { // only set if valid data
+    public boolean setHeight(int height) throws UnitMismatchException{
+        if (height > 0 && height < 108) { // only set if valid data
             this.height = height;
             return true;
+        } else if (!heightOverride) {
+            // in other countries people measure height in cm and that frequently goes above 100,
+            // heights in inches almost never, this catches most (but not all cases) where someone uses cm.
+            throw new UnitMismatchException("Inches");
         } else {
             return false;
         }
@@ -54,7 +68,25 @@ public abstract class HealthTracker {
 
     public boolean setHeight(int feet, int inches) {
         int totalInches = feet * 12 + inches;
-        return setHeight(totalInches);
+        // this is tough because the UnitMismatch Exception is implemented in the inches setter
+        // will only ever cause problems if someone is under ~3'7" or the tallest person in history.
+        // decided to put in an override just in case of these cases, could be handled in main method or gui
+        // either way not something that is easily handled specifically here as it requires user input
+        // left it as a boolean in this class though, and added a method to enable it.
+        // in order to not be insensitive the prompt could be something like: 
+        // "based on your input it appears you may be using centimeters while we expected inches, would you like to try again or continue with these measurements?"
+        // then a simple try again or a continue. 
+        try{
+            return setHeight(totalInches);
+        } catch(UnitMismatchException UME){
+            System.out.println(UME.getMessage());
+            return false;
+        }
+    }
+
+    public void overrideHeight() {
+        // Enables that override I was talking about
+        heightOverride = true;
     }
 
     // accessors
