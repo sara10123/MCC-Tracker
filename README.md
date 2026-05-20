@@ -24,16 +24,16 @@ classDiagram
        + toString() : String
    }
 
-   class edu.miracosta.cs112.models.HealthTracker {
+   class HealthTracker {
         <<Abstract>>
        + DEFAULT_WEIGHT : double = 100.0$
        + DEFAULT_HEIGHT : int = 100$
        - weight : double
        - height : int
        - heightOverride : boolean
-       + edu.miracosta.cs112.models.HealthTracker()
-       + edu.miracosta.cs112.models.HealthTracker(weight : double, height : int)
-       + edu.miracosta.cs112.models.HealthTracker(other : edu.miracosta.cs112.models.HealthTracker)
+       + HealthTracker()
+       + HealthTracker(weight : double, height : int)
+       + HealthTracker(other : HealthTracker)
        + getWeight() : double
        + setWeight(weight : double) : void
        + getHeightInInches() : int
@@ -71,7 +71,7 @@ classDiagram
    }
 
 
-   class edu.miracosta.cs112.models.DietTracker {
+   class DietTracker {
        + DEFAULT_FOOD : String = "Water"$
        + DEFAULT_CALORIES : int = 0$
        + DEFAULT_PROTEIN : double = 0.0$
@@ -82,9 +82,9 @@ classDiagram
        - protein : double
        - isSingleMeal : boolean
        - goal : String
-       + edu.miracosta.cs112.models.DietTracker()
-       + edu.miracosta.cs112.models.DietTracker(name : String, cal : int, pro : double, single : boolean, goal : String)
-       + edu.miracosta.cs112.models.DietTracker(other : edu.miracosta.cs112.models.DietTracker)
+       + DietTracker()
+       + DietTracker(name : String, cal : int, pro : double, single : boolean, goal : String)
+       + DietTracker(other : DietTracker)
        + getFoodName() : String
        + setFoodName(name : String) : void
        + getCalories() : int
@@ -99,24 +99,60 @@ classDiagram
        + toString() : String
    }
 
-   class edu.miracosta.cs112.models.PomodoroTimer {
+   class PomodoroTimer {
+   + DEFAULT_WORK_DURATION : int = 25 * 60 
+   + DEFAULT_BREAK_DURATION : int = 5 * 60
+   + DEFAULT_VOLUME : int = 5
+   + DEFAULT_ALARM_SOUND : String = "Default"
    - workDuration : int
    - breakDuration : int 
    - remainingTime : int 
    - sessionCount : int
    - volume : int
+   - alarmClip : AudioClip
    - isRunning : boolean
-   - workSession : boolean
-   - progress : double
+   - isWorkSession : boolean
    - alarmSound : String
+   - timer : Timeline
+   - onTick : Runnable 
+   
+   + PomodoroTimer()
+
+   + start() : void
+   + pause() : void
+   + reset() : void
+   
+   - tick() : void
+   - switchSession() : void
+   - updateProgress() : void
+   - playAlarm() : void
+   - notifyGui() : void
+
+   + getFormattedTime() : String
+   + getSessionLabel() : String
+
+   + getWorkDuration() : int
+   + getBreakDuration() : int
+   + getRemainingTime() : int
+   + getSessionCount() : int
+   + getAlarmSound() : String
+   + getVolume() : int
+   + getProgress() : double
+
+   + isRunning() : boolean
+   + isWorkSession() : boolean
+
+   + setOnTick(onTick : Runnable) : void
+   + setAlarmSound(alarmSound : String) : void
+   + setVolume(volume : int) : void
    }
    
-class edu.miracosta.cs112.UnitMismatchException {
-      + edu.miracosta.cs112.UnitMismatchException()
-      + edu.miracosta.cs112.UnitMismatchException(expected : String)
+class UnitMismatchException {
+      + UnitMismatchException()
+      + UnitMismatchException(expected : String)
    }
 
 
-   edu.miracosta.cs112.models.HealthTracker <|-- WorkoutTracker : extends
-   edu.miracosta.cs112.models.HealthTracker <|-- edu.miracosta.cs112.models.DietTracker : extends
+   HealthTracker <|-- WorkoutTracker : extends
+   HealthTracker <|-- DietTracker : extends
 ```

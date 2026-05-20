@@ -1,46 +1,220 @@
 package edu.miracosta.cs112.models;
 
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+import javafx.scene.media.AudioClip;
+
+import java.applet.AudioClip;
+
 public class PomodoroTimer {
-    final static int DEFAULT_WORK_DURATION = 25 * 60; //25 mins
+    final static int DEFAULT_WORK_DURATION = 1 * 60; //25 mins
     final static int DEFAULT_BREAK_DURATION = 5 * 60; // 5 mins
     final static int DEFAULT_VOLUME = 5;
-    final static String DEFAULT_ALARM_SOUND = "Default"; 
+    final static String DEFAULT_ALARM_SOUND = "Default";
 
     private int workDuration;
-    private int breakDuration; 
-    private int remainingTime; 
+    private int breakDuration;
+    private int remainingTime;
     private int sessionCount;
     private int volume;
-    
+    private AudioClip alarmClip;
+
     private boolean isRunning;
-    private boolean workSession;
-    
+    private boolean isWorkSession;
+
     private double progress;
 
     private String alarmSound;
 
-    public PomodoroTimer(int workDuration, int breakDuration, String alarmSound, int volume) {
-        //error checking
+    private Timeline timer;
+    private Runnable onTick;
+
+    /**
+     *  creates PomodoroTimer with default values.
+     */
+    public PomodoroTimer() {
+        workDuration = DEFAULT_WORK_DURATION;
+        breakDuration = DEFAULT_BREAK_DURATION;
+        remainingTime = DEFAULT_WORK_DURATION;
+        sessionCount = 0;
+        volume = DEFAULT_VOLUME;
+        isRunning = false;
+        isWorkSession = true;
+        progress = 0.0;
+        alarmSound = DEFAULT_ALARM_SOUND;
+        alarmClip = new java.applet.AudioClip() {
+        }
+        //creates a swing timer that calls on tick() every seccond. Timer activates every second. Swing handles repeating behavior.
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> tick()));
+        timer.setCycleCount(Timeline.INDEFINITE);
     }
 
-
-
-
-
-    
-    
     /**
-     * Methods: 
-     *  public void start() //starts the countdown. Uses the running variable sets it to true and can probably outprint a
-     * message to tell user that the timer has started. 
-     * public void pause() //stops countdown and sets running to false. Also outprints a message to tell user the timer has 
-     * stopped.    
-     * public void reset() //resets the timer meaning remainingTime and progress are both reset as well. running is changed to
-     * false. Outprints message telling user the timer is reset. 
-     * public void tick() //uses if statements to check whether timer is running and time left. Then decreases remainingTime and
-     * updates progress. A second if statement is used to check if the timer has reached zero, if so it calls the switchSession
-     * method to begin next session.
-     *  
+     * Starts the countdown timer if not already running. Usses isRunning variable to prevent timer from starting multiple times and begins the Timeline.
      */
+    public void start() {
+        if (!isRunning) {
+            isRunning = true;
+            timer.playFromStart();
+        }
+    }
+
+    /**
+     * Pauses the timer and keeps current time saved. Sets isRunning to false and pauses the Timeline for user to resume if they choose.
+     * **/
+    public void pause() {
+        isRunning = false;
+        timer.pause();
+    }
+
+    /**
+     * Stops and resets timer session. Resets remainingTime back to the default session and updates the display.
+     * **/
+    public void reset() {
+        timer.stop();
+        isRunning = false;
+
+        if (isWorkSession) {
+            remainingTime = workDuration;
+        } else {
+            remainingTime = breakDuration;
+        }
+        progress = 0.0;
+        //updates the GUI and what it shows user.
+        notifyGui();
+    }
+
+    /**
+     * Updates timer every second while running. Uses if statments to check if there
+     * is still time left. Decreases remainingTime and refreshes GUI. If timer gets to 0
+     * the alarm plays and the session is switched.
+     * */
+    private void tick() {
+        if (remainingTime > 0) {
+            remainingTime--;
+            updateProgress();
+            notifyGui();
+        } else {
+            playAlarm();
+            switchSession();
+            notifyGui();
+        }
+    }
+
+    //first stops the timer, therefore, running is set to false. Uses if else to switch the session so if it's currently a work session it...
+    private void switchSession() {
+        timer.stop();
+        isRunning = false;
+        if (isWorkSession) {
+            sessionCount++;
+            isWorkSession = false;
+            remainingTime = DEFAULT_BREAK_DURATION;
+        } else {
+            isWorkSession = true;
+            remainingTime = DEFAULT_WORK_DURATION;
+        }
+        progress = 0.0;
+    }
+
+    //updates total time
+    private void updateProgress() {
+        int totalTime;
+
+        if (isWorkSession) {
+            totalTime = workDuration;
+        } else {
+            totalTime = breakDuration;
+        }
+
+        progress = 1.0 - ((double) remainingTime / totalTime);
+    }
+
+    private void playAlarm() {
+        //place holder as of right now. until we get an audio file maybe?
+        if(alarmClip!= null) {
+            alarmClip.setVolume(volume/ 50.0);
+            alarmClip.play();
+        }
+    }
+
+    private void notifyGui() {
+        if (onTick != null) {
+            onTick.run();
+        }
+    }
+
+    //getters
+    public String getFormattedTime() {
+        int minutes = remainingTime / 60;
+        int seconds = remainingTime % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
+
+    public String getSessionLabel() {
+        if (isWorkSession) {
+            return "Work";
+        } else {
+            return "Break";
+        }
+    }
+
+    public int getWorkDuration() {
+        return workDuration;
+    }
+
+    public int getBreakDuration() {
+        return breakDuration;
+    }
+
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
+    public int getSessionCount() {
+        return sessionCount;
+    }
+
+    public String getAlarmSound() {
+        return alarmSound;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean isWorkSession() {
+        return isWorkSession;
+    }
+
+    //setters:
+    public void setOnTick(Runnable onTick) {
+        this.onTick = onTick;
+    }
+
+    public void setAlarmSound(String alarmSound) {
+        this.alarmSound = alarmSound;
+    }
+
+    public void setVolume(int volume) {
+        if (volume >= 0 && volume <= 50) {
+            this.volume = volume;
+        } else {
+            throw new IllegalArgumentException("Volume must be between 0-50");
+        }
+    }
 
 }
+
+
+
+    
+    

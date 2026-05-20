@@ -1,9 +1,14 @@
 package edu.miracosta.cs112;
 
 import edu.miracosta.cs112.models.DietTracker;
+import edu.miracosta.cs112.models.PomodoroTimer;
 
 public class Main {
     public static void main(String[] args) {
+
+
+
+        //CLASS TESTING
         DietTracker tester = new DietTracker();
         DietTracker copyOfTester = new DietTracker(tester); // DEEP COPY!!
         //edu.miracosta.cs112.models.HealthTracker copyOfTester = tester; //SHALLOW COPY!!
@@ -15,13 +20,13 @@ public class Main {
         try{
             tester.setHeight(120);
         } catch(UnitMismatchException UME) {
-            System.out.println(UME.getMessage());
-            System.out.println("If you are seeing this, this test worked!");
+            //System.out.println(UME.getMessage());
+            //System.out.println("If you are seeing this, this test worked!");
         }
         
 
-        System.out.println("After changes = " + tester); //205.6, 100
-        System.out.println("After changescopy = " + copyOfTester); //100, 100
+        //System.out.println("After changes = " + tester); //205.6, 100
+        //System.out.println("After changescopy = " + copyOfTester); //100, 100
 
         // Test for setWeight method
         // testSetWeight();
@@ -31,7 +36,7 @@ public class Main {
         myDiet.setCalories(150);
         myDiet.setToSingleMeal();
 
-        System.out.println("My diet tracker = " + myDiet);
+        //System.out.println("My diet tracker = " + myDiet);
         myDiet.printEncouragingMessage();
 
         // exception tests
@@ -45,12 +50,12 @@ public class Main {
              */
             DietTracker exceptionTest = new DietTracker(100, 100,
                     "Cheese", -100, 5.3, false, "snack to avoid eating candy");
-            System.out.println("no error for exception test! Here is the object: " + exceptionTest);
+            //System.out.println("no error for exception test! Here is the object: " + exceptionTest);
         } catch (IllegalArgumentException iae) {
-            System.out.println(iae.getMessage() + ". fix code and run again");
+            //System.out.println(iae.getMessage() + ". fix code and run again");
         }
 
-        System.out.println("!!!!reached the end!!");
+        //System.out.println("!!!!reached the end!!");
 
     }
 
@@ -65,4 +70,5 @@ public class Main {
     // + ht.getWeight());
     // }
     // }
+
 }
