@@ -3,12 +3,10 @@ package edu.miracosta.cs112.models;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
-import javafx.scene.media.AudioClip;
-
-import java.applet.AudioClip;
+//import javafx.scene.media.AudioClip;
 
 public class PomodoroTimer {
-    final static int DEFAULT_WORK_DURATION = 1 * 60; //25 mins
+    final static int DEFAULT_WORK_DURATION = 25 * 60; //25 mins
     final static int DEFAULT_BREAK_DURATION = 5 * 60; // 5 mins
     final static int DEFAULT_VOLUME = 5;
     final static String DEFAULT_ALARM_SOUND = "Default";
@@ -18,12 +16,11 @@ public class PomodoroTimer {
     private int remainingTime;
     private int sessionCount;
     private int volume;
-    private AudioClip alarmClip;
+    //private AudioClip alarmClip;
 
     private boolean isRunning;
     private boolean isWorkSession;
 
-    private double progress;
 
     private String alarmSound;
 
@@ -41,17 +38,19 @@ public class PomodoroTimer {
         volume = DEFAULT_VOLUME;
         isRunning = false;
         isWorkSession = true;
-        progress = 0.0;
         alarmSound = DEFAULT_ALARM_SOUND;
-        alarmClip = new java.applet.AudioClip() {
-        }
+        //alarmClip = new AudioClip(
+                //getClass().getResource("/sounds/pomodoro-timer-alarm.mp3").toExternalForm()
+        //);
+
         //creates a swing timer that calls on tick() every seccond. Timer activates every second. Swing handles repeating behavior.
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> tick()));
         timer.setCycleCount(Timeline.INDEFINITE);
     }
 
     /**
-     * Starts the countdown timer if not already running. Usses isRunning variable to prevent timer from starting multiple times and begins the Timeline.
+     * Starts the countdown timer if not already running.
+     * Uses isRunning variable to prevent timer from starting multiple times and begins the Timeline.
      */
     public void start() {
         if (!isRunning) {
@@ -61,7 +60,8 @@ public class PomodoroTimer {
     }
 
     /**
-     * Pauses the timer and keeps current time saved. Sets isRunning to false and pauses the Timeline for user to resume if they choose.
+     * Pauses the timer and keeps current time saved.
+     * Sets isRunning to false and pauses the Timeline for user to resume if they choose.
      * **/
     public void pause() {
         isRunning = false;
@@ -80,7 +80,6 @@ public class PomodoroTimer {
         } else {
             remainingTime = breakDuration;
         }
-        progress = 0.0;
         //updates the GUI and what it shows user.
         notifyGui();
     }
@@ -93,10 +92,9 @@ public class PomodoroTimer {
     private void tick() {
         if (remainingTime > 0) {
             remainingTime--;
-            updateProgress();
             notifyGui();
         } else {
-            playAlarm();
+            //playAlarm();
             switchSession();
             notifyGui();
         }
@@ -109,34 +107,21 @@ public class PomodoroTimer {
         if (isWorkSession) {
             sessionCount++;
             isWorkSession = false;
-            remainingTime = DEFAULT_BREAK_DURATION;
+            remainingTime = breakDuration;
         } else {
             isWorkSession = true;
-            remainingTime = DEFAULT_WORK_DURATION;
-        }
-        progress = 0.0;
-    }
-
-    //updates total time
-    private void updateProgress() {
-        int totalTime;
-
-        if (isWorkSession) {
-            totalTime = workDuration;
-        } else {
-            totalTime = breakDuration;
-        }
-
-        progress = 1.0 - ((double) remainingTime / totalTime);
-    }
-
-    private void playAlarm() {
-        //place holder as of right now. until we get an audio file maybe?
-        if(alarmClip!= null) {
-            alarmClip.setVolume(volume/ 50.0);
-            alarmClip.play();
+            remainingTime = workDuration;
         }
     }
+
+
+//    private void playAlarm() {
+//        //need to add the file
+//        if(alarmClip!= null) {
+//            alarmClip.setVolume(volume/ 50.0);
+//            alarmClip.play();
+//        }
+//    }
 
     private void notifyGui() {
         if (onTick != null) {
@@ -181,10 +166,6 @@ public class PomodoroTimer {
 
     public int getVolume() {
         return volume;
-    }
-
-    public double getProgress() {
-        return progress;
     }
 
     public boolean isRunning() {
