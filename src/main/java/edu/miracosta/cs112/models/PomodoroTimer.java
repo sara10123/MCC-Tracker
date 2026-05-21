@@ -3,20 +3,15 @@ package edu.miracosta.cs112.models;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
-//import javafx.scene.media.AudioClip;
 
 public class PomodoroTimer {
     final static int DEFAULT_WORK_DURATION = 25 * 60; //25 mins
     final static int DEFAULT_BREAK_DURATION = 5 * 60; // 5 mins
-    final static int DEFAULT_VOLUME = 5;
-    final static String DEFAULT_ALARM_SOUND = "Default";
 
     private int workDuration;
     private int breakDuration;
     private int remainingTime;
     private int sessionCount;
-    private int volume;
-    //private AudioClip alarmClip;
 
     private boolean isRunning;
     private boolean isWorkSession;
@@ -35,13 +30,8 @@ public class PomodoroTimer {
         breakDuration = DEFAULT_BREAK_DURATION;
         remainingTime = DEFAULT_WORK_DURATION;
         sessionCount = 0;
-        volume = DEFAULT_VOLUME;
         isRunning = false;
         isWorkSession = true;
-        alarmSound = DEFAULT_ALARM_SOUND;
-        //alarmClip = new AudioClip(
-                //getClass().getResource("/sounds/pomodoro-timer-alarm.mp3").toExternalForm()
-        //);
 
         //creates a swing timer that calls on tick() every seccond. Timer activates every second. Swing handles repeating behavior.
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> tick()));
@@ -94,7 +84,6 @@ public class PomodoroTimer {
             remainingTime--;
             notifyGui();
         } else {
-            //playAlarm();
             switchSession();
             notifyGui();
         }
@@ -115,14 +104,6 @@ public class PomodoroTimer {
     }
 
 
-//    private void playAlarm() {
-//        //need to add the file
-//        if(alarmClip!= null) {
-//            alarmClip.setVolume(volume/ 50.0);
-//            alarmClip.play();
-//        }
-//    }
-
     private void notifyGui() {
         if (onTick != null) {
             onTick.run();
@@ -130,6 +111,10 @@ public class PomodoroTimer {
     }
 
     //getters
+
+    /**
+     *formats time
+     */
     public String getFormattedTime() {
         int minutes = remainingTime / 60;
         int seconds = remainingTime % 60;
@@ -160,14 +145,6 @@ public class PomodoroTimer {
         return sessionCount;
     }
 
-    public String getAlarmSound() {
-        return alarmSound;
-    }
-
-    public int getVolume() {
-        return volume;
-    }
-
     public boolean isRunning() {
         return isRunning;
     }
@@ -179,18 +156,6 @@ public class PomodoroTimer {
     //setters:
     public void setOnTick(Runnable onTick) {
         this.onTick = onTick;
-    }
-
-    public void setAlarmSound(String alarmSound) {
-        this.alarmSound = alarmSound;
-    }
-
-    public void setVolume(int volume) {
-        if (volume >= 0 && volume <= 50) {
-            this.volume = volume;
-        } else {
-            throw new IllegalArgumentException("Volume must be between 0-50");
-        }
     }
 
 }
